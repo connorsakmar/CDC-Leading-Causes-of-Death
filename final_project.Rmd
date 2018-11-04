@@ -1,0 +1,41 @@
+---
+title: "final_project"
+author: "Connor Sakmar"
+date: "November 2, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(dplyr)
+library(kableExtra)
+library(tidytext)
+library(knitr)
+library(janitor)
+library(lubridate)
+library(stringr)
+library(fs)
+library(formattable)
+library(ggplot2)
+```
+
+```{r, echo = FALSE}
+
+
+leading_deaths <- read.csv("https://data.cdc.gov/api/views/bi63-dtpu/rows.csv?accessType=DOWNLOAD")
+
+
+
+
+leading_deaths %>%
+  select(Year, Deaths, State, Cause.Name) %>%
+  filter(Year  == "2016", State == "United States", Cause.Name != "All causes") %>%
+  ggplot(aes(x = Cause.Name, y = Deaths, fill = Cause.Name)) + geom_bar(stat = "identity") +
+  xlab("Year (2016)") + ylab("Number of Deaths") + 
+  ggtitle("2016 Top Causes of Death in the United States (part of leading causes of death)") +
+  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
+
+
+  
+```
