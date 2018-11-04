@@ -33,7 +33,7 @@ leading_deaths %>%
   filter(Year  == "2016", State == "United States", Cause.Name != "All causes") %>%
   ggplot(aes(x = Cause.Name, y = Deaths, fill = Cause.Name)) + geom_bar(stat = "identity") +
   xlab("Year (2016)") + ylab("Number of Deaths") + 
-  ggtitle("2016 Top Causes of Death in the United States (part of leading causes of death)") +
+  ggtitle("2016 Leading Causes of Death in the United States") +
   theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
 
 
