@@ -7,7 +7,6 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
 library(dplyr)
 library(kableExtra)
 library(tidytext)
@@ -18,23 +17,43 @@ library(stringr)
 library(fs)
 library(formattable)
 library(ggplot2)
+library(gganimate)
+library(tidyverse)
 ```
 
 ```{r, echo = FALSE}
 
 
-leading_deaths <- read.csv("https://data.cdc.gov/api/views/bi63-dtpu/rows.csv?accessType=DOWNLOAD")
-
-
-
+leading_deaths <- read.csv("NCHS_-_Leading_Causes_of_Death__United_States.csv")
 
 leading_deaths %>%
-  select(Year, Deaths, State, Cause.Name) %>%
-  filter(Year  == "2016", State == "United States", Cause.Name != "All causes") %>%
-  ggplot(aes(x = Cause.Name, y = Deaths, fill = Cause.Name)) + geom_bar(stat = "identity") +
-  xlab("Year (2016)") + ylab("Number of Deaths") + 
-  ggtitle("2016 Leading Causes of Death in the United States") +
-  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
+  
+
+
+
+#First Bar Graph
+    myPlot1 <- leading_deaths %>%
+      select(Year, Deaths, State, Cause.Name) %>%
+      filter(Year == input$x) %>%
+      filter(State == "United States", Cause.Name != "All causes") %>%
+      ggplot(aes(x = Cause.Name, y = Deaths, fill = Cause.Name)) + geom_bar(stat = "identity") +
+      xlab("Year") + ylab("Number of Deaths") + 
+      ggtitle("Leading Causes of Death in the United States 1999-2016") +
+      theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
+    
+    require(scales)
+    myPlot1 + scale_y_continuous(labels = comma)
+    
+#Scatter Plot   
+       myPlot2 <- leading_deaths %>%
+      filter(State == "United States") %>%
+      filter(Cause.Name == input$Cause.Name) %>%
+      ggplot(aes(x = Year, y = Deaths)) + geom_point() + geom_smooth()
+    
+    require(scales)
+    myPlot2 + scale_y_continuous(labels = comma)
+
+
 
 
   
