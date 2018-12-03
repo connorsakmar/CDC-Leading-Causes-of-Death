@@ -1,5 +1,5 @@
 ---
-title: "final_project"
+title: "CDC Leading Causes of Death"
 author: "Connor Sakmar"
 date: "November 2, 2018"
 output: html_document
@@ -18,23 +18,38 @@ library(fs)
 library(formattable)
 library(ggplot2)
 library(gganimate)
+library(leaflet)
+library(rgdal)
+library(maps)
+library(mapproj)
+library(fiftystater)
+library(sf)
 library(tidyverse)
 ```
 
 ```{r, echo = FALSE}
 
 
+
+
+
 leading_deaths <- read.csv("NCHS_-_Leading_Causes_of_Death__United_States.csv")
 
-leading_deaths %>%
+leading_deaths 
   
+  
+# From https://www.census.gov/geo/maps-data/data/cbf/cbf_state.html
+
+states <- readOGR(dsn = "./cb_2014_us_state_20m.shp",
+                  layer = "cb_2014_us_state_20m", verbose = FALSE)
 
 
 
 #First Bar Graph
     myPlot1 <- leading_deaths %>%
       select(Year, Deaths, State, Cause.Name) %>%
-      filter(Year == input$x) %>%
+    # I will add a filter to make the year an important function in my shiny app
+    #  filter(Year == input$x) %>%
       filter(State == "United States", Cause.Name != "All causes") %>%
       ggplot(aes(x = Cause.Name, y = Deaths, fill = Cause.Name)) + geom_bar(stat = "identity") +
       xlab("Year") + ylab("Number of Deaths") + 
@@ -58,4 +73,42 @@ leading_deaths %>%
 
   
 ```
+```
+```{r}
+
+
+leading_deaths <- read.csv("NCHS_-_Leading_Causes_of_Death__United_States.csv")
+
+
+leading_deaths <- leading_deaths %>%
+  filter(year == 2016) %>% 
+  filter(Cause.Name == Cancer)
+
+leading_deaths$id <- tolower(leading_deaths$State)
+
+us_states_leading_deaths <- left_join(sf_fifty, leading_deaths)
+
+st_as_sf(fifty_states, coords = c("long", "lat"))
+
+st_as_sf(fifty_states, coords = c("long", "lat")) %>% 
+  # convert sets of points to polygons
+  group_by(id, piece) %>% 
+  summarize(do_union = FALSE) %>%
+  st_cast("POLYGON")
+
+# convert fifty_states to an sf data frame
+(sf_fifty <- st_as_sf(fifty_states, coords = c("long", "lat")) %>% 
+    # convert sets of points to polygons
+    group_by(id, piece) %>% 
+    summarize(do_union = FALSE) %>%
+    st_cast("POLYGON") %>%
+    # convert polygons to multipolygons for states with discontinuous regions
+    group_by(id) %>%
+    summarize())
+
+
+st_crs(sf_fifty) <- 4326
+ggplot(data = us_states_leading_deaths) +
+  geom_sf(aes(fill = Deaths))
+  
 ```

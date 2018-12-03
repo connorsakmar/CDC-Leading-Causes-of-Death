@@ -51,7 +51,7 @@ ui <- fluidPage(fluidPage(theme = shinytheme("cerulean")),
                     selectInput(inputId = "Cause.Name", 
                                 label = "Cause of Death:",
                                 choices = unique(leading_deaths$Cause.Name),
-                                selected = "All Causes"))),
+                                selected = "Unintentional injuries"))),
                   
                   
                   
@@ -100,7 +100,7 @@ server <- function(input, output) {
     
     
     myPlot2 <- leading_deaths %>%
-      filter(State == "United States") %>%
+      filter(State == "United States", Cause.Name != "All causes") %>%
       filter(Cause.Name == input$Cause.Name) %>%
       ggplot(aes(x = Year, y = Deaths)) + geom_point() + geom_smooth()
     
@@ -141,15 +141,15 @@ server <- function(input, output) {
     str7 <- paste("Fill")
     str8 <- paste("Fill")
     
-    HTML(paste(h3(str1), p(str2), h3(str3), p(str4), h3(str5), p(str6), h4(str7), p(str8)))})
+    HTML(paste(h3(str1), p(str2), h3(str3), p(str4), h3(str5), p(str6), h3(str7), p(str8)))})
   
   
   output$top_causes <- renderUI({
     
     #Explaining the leading causes of death
     
-    str1 <- paste("Fill")
-    str2 <- paste("Fill")
+    str1 <- paste("CLRD")
+    str2 <- paste("Chronic Lower Respiratory Disease")
     str3 <- paste("Fill") 
     str4 <- paste("Fill")
     str5 <- paste("Fill")
@@ -157,7 +157,7 @@ server <- function(input, output) {
     str7 <- paste("Fill")
     str8 <- paste("Fill")
     
-    HTML(paste(h3(str1), p(str2), h3(str3), p(str4), h3(str5), p(str6), h4(str7), p(str8)))})}
+    HTML(paste(h3(str1), p(str2), h3(str3), p(str4), h3(str5), p(str6), h3(str7), p(str8)))})}
   
   
 
