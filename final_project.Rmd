@@ -40,25 +40,57 @@ leading_deaths <- read.csv("NCHS_-_Leading_Causes_of_Death__United_States.csv")
 
 
 
-#First Bar Graph
+#This is the code for my Bar Graph, here we want the user to be able to compare all of the 
+#causes next to each other.When put into shiny, In the shiny app, it is possible to choose 
+#the year so that the causes can be compared for every year.
+
     myPlot1 <- leading_deaths %>%
       select(Year, Deaths, State, Cause.Name) %>%
-    # I will add a filter to make the year an important function in my shiny app
+    # This filter below will be added into shiny to make the year an important function in the shiny app:
     #  filter(Year == input$x) %>%
+      
+      #We want to compare just the ten causes and just the United States totals.
+      #The US totals are more impactful, and All Causes data does not just ruin
+      #scaling on the bar graph but the All Causes data is incomplete for the year 2016
+      
       filter(State == "United States", Cause.Name != "All causes") %>%
       ggplot(aes(x = Cause.Name, y = Deaths, fill = Cause.Name)) + geom_bar(stat = "identity") +
       xlab("Year") + ylab("Number of Deaths") + 
       ggtitle("Leading Causes of Death in the United States 1999-2016") +
+      
+      #Getting rid of the bottom tick marks and cause names as they made the bottom 
+      #of the graph cluttered and were also redundant. 
       theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
     
+    #The deaths total is easier to read in thousands than in scientific notation
+    #so this code converts the deaths into thousands below. 
     require(scales)
     myPlot1 + scale_y_continuous(labels = comma)
     
-#Scatter Plot   
+    
+    
+#This is the code for the Scatter Plot. Unlike the Bar Graph, we want the user to be able to 
+#see the trends of each individual cause throughout the given year period 1999-2016. In
+#the shiny app, this is made possible by a pull down menu to input each different cause of death. 
+
+    
        myPlot2 <- leading_deaths %>%
+         
+      #Again, looking at just the United States totals.
       filter(State == "United States") %>%
-      filter(Cause.Name == input$Cause.Name) %>%
+         
+      #This is the filter that put into the shiny app that allows
+      #the user to input each different cause of death:
+      #filter(Cause.Name == input$Cause.Name) %>%
+         
+      
+      #If you run just this ggplot, it will give a strange scatterplot 
+      #that includes all of the deaths and year. Once the filter is added
+      #in shiny though, this scatterplot will make sense. 
       ggplot(aes(x = Year, y = Deaths)) + geom_point() + geom_smooth()
+       
+#The deaths total is easier to read in thousands than in scientific notation
+#so this code converts the deaths into thousands below. 
     
     require(scales)
     myPlot2 + scale_y_continuous(labels = comma)
@@ -71,38 +103,45 @@ leading_deaths <- read.csv("NCHS_-_Leading_Causes_of_Death__United_States.csv")
 ```
 ```{r}
 
+#This is the code tha used for the map. Most of this is put into a RDS.
 
+
+#Rereading the leading deaths as it may be manipulated later in the code.
 leading_deaths <- read.csv("NCHS_-_Leading_Causes_of_Death__United_States.csv")
 
+#As mentioned earlier in the code, the 'All Causes' data for 2016 is incomplete
+#in the CDC dataset, so it is easier to filter it out of leading_deaths at the very beginning of the 
+#map code to avoid any future complications. 
 leading_deaths <- leading_deaths %>%
 filter(Cause.Name != 'All causes')
 
-st_as_sf(fifty_states, coords = c("long", "lat"))
-
-st_as_sf(fifty_states, coords = c("long", "lat")) %>% 
-  # convert sets of points to polygons
-  group_by(id, piece) %>% 
-  summarize(do_union = FALSE) %>%
-  st_cast("POLYGON")
-
-# convert fifty_states to an sf data frame
+#The fiftystater library is loaded as it allows us to include all 50 states into the map.
+#The library allows be to call the data with fifty_states, though it has to be converted it 
+#to a sf data frame and saving it as sf_fifty.
 (sf_fifty <- st_as_sf(fifty_states, coords = c("long", "lat")) %>% 
-    # convert sets of points to polygons
+    
+#Converting the sets of points within the data into polygons
     group_by(id, piece) %>% 
     summarize(do_union = FALSE) %>%
     st_cast("POLYGON") %>%
-    # convert polygons to multipolygons for states with discontinuous regions
-    group_by(id) %>%
+    
+#Converting the polygons to multipolygons for states with discontinuous regions
+    group_by(id) %>% 
     summarize())
    
+#This retrieves a coordinate reference system. 
 st_crs(sf_fifty) <- 4326
-leading_deaths$id <- tolower(leading_deaths$State)
 
+#Setting the states in leading death to lowercase so that the data can be joined with 
+#sf_fifty properly
+leading_deaths$id <- tolower(leading_deaths$State)
 us_states_leading_deaths <- left_join(sf_fifty, leading_deaths)
 
+#Creating a RDS file to put into shiny so that the code does not have to re-run in shiny
+#every time the app is run. 
 write_rds(us_states_leading_deaths, "us_states_leading_deaths.rds", compress = "none")
 
-
+#This is the basic ggplot structure for the map. 
 ggplot(data = us_states_leading_deaths) +
   geom_sf(aes(fill = Deaths))
   
