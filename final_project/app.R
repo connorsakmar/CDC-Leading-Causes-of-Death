@@ -20,7 +20,6 @@ library(stringr)
 library(fs)
 library(formattable)
 library(ggplot2)
-library(gganimate)
 library(tidyverse)
 library(leaflet)
 library(rgdal)
@@ -54,8 +53,10 @@ ui <- fluidPage(fluidPage(theme = shinytheme("cerulean")),
                     
                     selectInput(inputId = "Cause.Name", 
                                 label = "Cause of Death:",
-                                choices = unique(leading_deaths$Cause.Name),
-                                selected = "Unintentional injuries")),
+                                choices = c("Alzheimer's Disease" = "Alzheimer's disease", "Cancer" = "Cancer", "CLRD" = "CLRD", "Diabetes" = "Diabetes",
+                                            "Heart Disease" = "Heart Disease", "Influenza and Pneumonia" = "Influenza and pneumonia", "Kidney Diseae" = "Kidney Disease",
+                                            "Stroke" = "Stroke", "Suicide" = "Suicide", "Unintentional Injuries" = "Unintentional injuries"),
+                                selected = "Unintentional Injuries")),
                   
                   
                   
@@ -140,9 +141,9 @@ server <- function(input, output) {
     # Provide users with information on the data source
     
     str1 <- paste("About")
-    str2 <- paste("Leading Causes of Death")
+    str2 <- paste("Leading Causes of Death in the United States from 1999-2016. ")
     str3 <- paste("What to explore?") 
-    str4 <- paste("Graphs. Data")
+    str4 <- paste("There is a map ")
     str5 <- paste("Source")
     str6 <- paste("CDC")
     
