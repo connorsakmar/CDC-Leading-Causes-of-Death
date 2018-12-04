@@ -23,9 +23,15 @@ library(ggplot2)
 library(gganimate)
 library(tidyverse)
 library(leaflet)
-install.packages(shinydashboard)
+library(rgdal)
+library(maps)
+library(mapproj)
+library(fiftystater)
+library(sf)
 
 leading_deaths <- read.csv("https://data.cdc.gov/api/views/bi63-dtpu/rows.csv?accessType=DOWNLOAD")
+
+us_states_leading_deaths_2 <- read_rds("us_states_leading_deaths.rds")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(fluidPage(theme = shinytheme("cerulean")),
@@ -37,21 +43,19 @@ ui <- fluidPage(fluidPage(theme = shinytheme("cerulean")),
                 # Sidebar with a slider input for number of bins 
                 sidebarLayout(
                   sidebarPanel(
-                    conditionalPanel(
-                      condition = "input$x == 'Bar Graph'", 
+                   
                     selectInput(inputId = "x",
                                 label = "Year:",
                                 choices = unique(leading_deaths$Year),
-                                selected = "1999")),
+                                selected = "1999"),
                     
                   
                     
-                    conditionalPanel(
-                      condition = "input$Cause.Name == 'Scatter Plot'",
+                    
                     selectInput(inputId = "Cause.Name", 
                                 label = "Cause of Death:",
                                 choices = unique(leading_deaths$Cause.Name),
-                                selected = "Unintentional injuries"))),
+                                selected = "Unintentional injuries")),
                   
                   
                   
@@ -62,6 +66,7 @@ ui <- fluidPage(fluidPage(theme = shinytheme("cerulean")),
                     tabsetPanel(type = "tabs",
                                 tabPanel("About", htmlOutput("about")),
                                 tabPanel("The Top Causes", htmlOutput("top_causes")),
+                                tabPanel("Map", plotOutput("myMap")),
                                 tabPanel("Bar Graph", plotlyOutput("myPlot")),
                                 tabPanel("Scatter Plot", plotlyOutput("myPlot2")),
                                 tabPanel("Resources", htmlOutput("resources")))
@@ -76,7 +81,7 @@ server <- function(input, output) {
   
   
   
-  #Creating a scatter plot
+
   output$myPlot <- renderPlotly({
     
     myPlot1 <- leading_deaths %>%
@@ -109,6 +114,22 @@ server <- function(input, output) {
     
     
     
+    
+    
+  })
+  
+  
+  
+  output$myMap <- renderPlot({
+    
+    myMap <- 
+      
+     us_states_leading_deaths_2 <-  us_states_leading_deaths_2 %>%
+      filter(Year == input$x) %>%
+      filter(Cause.Name == input$Cause.Name)
+    
+    ggplot(data = us_states_leading_deaths_2) +
+      geom_sf(aes(fill = Deaths))
     
     
   })
