@@ -87,7 +87,7 @@ leading_deaths <- read.csv("NCHS_-_Leading_Causes_of_Death__United_States.csv")
       #If you run just this ggplot, it will give a strange scatterplot 
       #that includes all of the deaths and year. Once the filter is added
       #in shiny though, this scatterplot will make sense. 
-      ggplot(aes(x = Year, y = Deaths)) + geom_point() + geom_smooth()
+      ggplot(aes(x = Year, y = Deaths)) + geom_point() + geom_smooth() 
        
 #The deaths total is easier to read in thousands than in scientific notation
 #so this code converts the deaths into thousands below. 
