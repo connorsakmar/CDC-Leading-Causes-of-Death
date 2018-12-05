@@ -195,8 +195,7 @@ server <- function(input, output) {
     str6 <- paste("The scatter plot shows some striking trends in the leading causes of death. Seven of the ten causes have generally trended upward since 1999. 
                   The three causes that don't show this trend are stroke, heart disease, and influenza and pneumonia. These all trended downards until around 2010,
                   when they began to slowly trend upwards again. While it is hard to speculate as to why this trend happens with all 3, one might speculate that there
-                  might have been a decline in deaths in the eldery population prior to 2010, as they are especially susceptible to these three causes. 
-                   ")
+                  may have been a decline in deaths in the eldery population prior to 2010, as they are especially susceptible to these three causes.")
     str7 <- paste("Conclusion")
     str8 <- paste("The leading causes of death continue to rise and trend upward. We can hope that modern science can advance far enough that deaths from these
                   causes will decline in the near future. Hopefully you enjoyed looking at this data and that it has encouraged you to look more closely and
