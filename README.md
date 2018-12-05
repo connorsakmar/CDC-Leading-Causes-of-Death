@@ -11,7 +11,7 @@ Millions of Americans die each year and the leading causes of death account for 
 By educating and informing the common American about the leading deaths data, the hope is that more people will realize that there is still a high demand for research and support to prevent these deaths. If the shiny app can aid in anyway in that effort, then it should be considered a success. With this increased interest, hopefully Americans will be able to lower the amount of deaths due to the leading causes. 
 
 
-For those who want more statisitcs and info on general American health, this is a useful rsource: 
+For those who want more statisitcs and info on general American health, this is a useful resource: 
 
 https://www.cdc.gov/healthreport/publications/compendium.pdf
 
