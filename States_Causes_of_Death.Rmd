@@ -100,10 +100,10 @@ leading_deaths <- read.csv("NCHS_-_Leading_Causes_of_Death__United_States.csv")
 
   
 ```
-```
+
 ```{r}
 
-#This is the code tha used for the map. Most of this is put into a RDS.
+#This is the code that is used for the map. Most of this is put into a RDS.
 
 
 #Rereading the leading deaths as it may be manipulated later in the code.
