@@ -66,7 +66,11 @@ ui <- fluidPage(fluidPage(theme = shinytheme("cerulean")),
                                 choices = c("Alzheimer's Disease" = "Alzheimer's disease", "Cancer" = "Cancer", "CLRD" = "CLRD", "Diabetes" = "Diabetes",
                                             "Heart Disease" = "Heart disease", "Influenza and Pneumonia" = "Influenza and pneumonia", "Kidney Disease" = "Kidney disease",
                                             "Stroke" = "Stroke", "Suicide" = "Suicide", "Unintentional Injuries" = "Unintentional injuries"),
-                                selected = "Unintentional Injuries")),
+                                selected = "Unintentional Injuries"),
+                    
+                    
+                    tags$h6(helpText("Note: The Year and Cause of Death drop down menus can both be used for the map. Only the Year drop down menu
+                                     will change the bar graph and only the Cause of Death drop down menu will change the scatter plot."))),
                   
                   
                   
