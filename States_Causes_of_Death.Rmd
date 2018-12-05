@@ -1,5 +1,5 @@
 ---
-title: "CDC Leading Causes of Death"
+title: "CDC Leading Causes of Death 1999-2016"
 author: "Connor Sakmar"
 date: "December 5, 2018"
 output: html_document
