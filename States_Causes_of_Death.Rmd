@@ -96,7 +96,8 @@ leading_deaths <- read.csv("NCHS_-_Leading_Causes_of_Death__United_States.csv")
     myPlot2 + scale_y_continuous(labels = comma)
 
 
-  
+
+    
   
 ```
 
@@ -141,7 +142,8 @@ us_states_leading_deaths <- left_join(sf_fifty, leading_deaths)
 #every time the app is run. 
 write_rds(us_states_leading_deaths, "us_states_leading_deaths.rds", compress = "none")
 
-#This is the basic ggplot structure for the map. 
+#This is the basic ggplot structure for the map. In the shiny app it will be possible to choose between
+#the number of deaths and the age-adjusted death rate. 
 ggplot(data = us_states_leading_deaths) +
   geom_sf(aes(fill = Deaths))
   
