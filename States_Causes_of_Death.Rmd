@@ -96,8 +96,7 @@ leading_deaths <- read.csv("NCHS_-_Leading_Causes_of_Death__United_States.csv")
     myPlot2 + scale_y_continuous(labels = comma)
 
 
-
-
+  
   
 ```
 
@@ -109,11 +108,12 @@ leading_deaths <- read.csv("NCHS_-_Leading_Causes_of_Death__United_States.csv")
 #Rereading the leading deaths as it may be manipulated later in the code.
 leading_deaths <- read.csv("NCHS_-_Leading_Causes_of_Death__United_States.csv")
 
-#As mentioned earlier in the code, the 'All Causes' data for 2016 is incomplete
+#As mentioned earlier in the code, the 'All Causes' total deaths data for 2016 is incomplete
 #in the CDC dataset, so it is easier to filter it out of leading_deaths at the very beginning of the 
-#map code to avoid any future complications. 
+#map code to avoid any future complications. However, it should be noted that the 2016 data for the 
+#death totals due to leading causes of death is updated.  
 leading_deaths <- leading_deaths %>%
-filter(Cause.Name != 'All causes')
+  filter(Cause.Name != "All causes")
 
 #The fiftystater library is loaded as it allows us to include all 50 states into the map.
 #The library allows be to call the data with fifty_states, though it has to be converted it 

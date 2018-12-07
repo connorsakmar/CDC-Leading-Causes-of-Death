@@ -45,6 +45,12 @@ ui <- fluidPage(fluidPage(theme = shinytheme("cerulean")),
                 # Sidebar with a slider input for number of bins 
                 sidebarLayout(
                   sidebarPanel(
+                    
+                    #Allows the user to choose between total deaths and age-adjusted death rate. 
+                    selectInput(inputId = "z",
+                                 label = "Death Statistic:",
+                                 choices = c("Total Deaths" = "Deaths", "Age-Adjusted Death Rate" = "Age.adjusted.Death.Rate"),
+                                 selected = "Total Deaths"),
                    
                     #Allows every year in the dataset to be part of a  pulldown tab. 
                     selectInput(inputId = "x",
@@ -66,7 +72,7 @@ ui <- fluidPage(fluidPage(theme = shinytheme("cerulean")),
                                 selected = "Unintentional Injuries"),
                     
                     
-                    tags$h6(helpText("Note: The Year and Cause of Death drop down menus can both be used for the map. Only the Year drop down menu
+                    tags$h6(helpText("Note: The Year, the Cause of Death, and Age-Adjusted Death Rate  drop down menus can both be used for the map. Only the Year drop down menu
                                      will change the bar graph and only the Cause of Death drop down menu will change the scatter plot."))),
                   
                   
@@ -117,14 +123,14 @@ server <- function(input, output) {
   output$myPlot2 <- renderPlotly({
     
     
-  #See markdwon file additional comments on this code.
+  #See markdown file additional comments on this code.
     
     myPlot2 <- leading_deaths %>%
       filter(State == "United States", Cause.Name != "All causes") %>%
       filter(Cause.Name == input$Cause.Name) %>%
       
       #Added a title to the scatter plot
-      ggplot(aes(x = Year, y = Deaths)) + geom_point() + geom_smooth() + ggtitle("Trends of Leading Causes of Death in the U.S. 1999-2016") 
+      ggplot(aes_string(x = Year, y = input$z)) + geom_point() + geom_smooth() + ggtitle("Trends of Leading Causes of Death in the U.S. 1999-2016") 
     
     require(scales)
     myPlot2 + scale_y_continuous(labels = comma)
@@ -149,7 +155,8 @@ server <- function(input, output) {
     
     ggplot(data = us_states_leading_deaths_2) +
       #Added a better gradient so that the differences between states are more obvious. 
-      geom_sf(aes(fill = Deaths)) + scale_fill_gradient(low = "white", high = "#009E73")
+      geom_sf(aes_string(fill = input$z)) + 
+      scale_fill_gradient(low = "white", high = "#009E73")
     
     
   })
