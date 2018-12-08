@@ -41,43 +41,48 @@ us_states_leading_deaths_2 <- read_rds("us_states_leading_deaths.rds")
                   sidebarLayout(
                     sidebarPanel(
                       
+                      #This ensures that the Death Statistic pull-down menu appears when either the map or the scatterplot is selected.
+                      conditionalPanel(condition = "input.tabs != 'Bar Graph'",
+                                       
                       #Allows the user to choose between total deaths and age-adjusted death rate. 
                       selectInput(inputId = "z",
                                   label = "Death Statistic:",
                                   choices = c("Total Deaths" = "Deaths", "Age-Adjusted Death Rate" = "Age.adjusted.Death.Rate"),
-                                  selected = "Total Deaths"),
+                                  selected = "Total Deaths")),
                       
-                      #Allows every year in the dataset to be part of a pulldown tab. 
+                      #This ensures that the Year pull-down menu appears when either the map or the bar graph is selected. 
+                      conditionalPanel(condition = "input.tabs != 'Scatter Plot'",
+                      
+                      #Allows every year in the dataset to be part of a pull-down tab. 
                       selectInput(inputId = "x",
                                   label = "Year:",
                                   choices = unique(leading_deaths$Year),
-                                  selected = "1999"),
+                                  selected = "1999")),
                       
                       
                       
-                      #This code allows every cause of death in the dataset to be part of a pulldown *except* for all.causes. 
+                      #This ensures that the cause of death pull-down menu appears when either the map or the scatterplot is selected.
+                      conditionalPanel(condition = "input.tabs != 'Bar Graph'",
+                      
+                      #This code allows every cause of death in the dataset to be part of a pull-down menu *except* for all.causes. 
                       #As stated in the markdown file, the 2016 data for all causes is incomplete and there is such a high
                       #death toll for all causes compared to the singular causes of death that the scaling for the graphs 
-                      #are not as balanced. 
+                      #is not as balanced. 
                       selectInput(inputId = "Cause.Name", 
                                   label = "Cause of Death:",
                                   choices = c("Alzheimer's Disease" = "Alzheimer's disease", "Cancer" = "Cancer", "CLRD" = "CLRD", "Diabetes" = "Diabetes",
                                               "Heart Disease" = "Heart disease", "Influenza and Pneumonia" = "Influenza and pneumonia", "Kidney Disease" = "Kidney disease",
                                               "Stroke" = "Stroke", "Suicide" = "Suicide", "Unintentional Injuries" = "Unintentional injuries"),
-                                  selected = "Unintentional Injuries"),
+                                  selected = "Unintentional Injuries"))),
                       
                       
-                      tags$h6(helpText("Note: The Year, the Cause of Death, and Age-Adjusted Death Rate  drop down menus can both be used for the map. Only the Year drop down menu
-                                       will change the bar graph and only the Cause of Death drop down menu will change the scatter plot."))),
-                    
-                    
-                    
+                 
                     # Show a plot of the generated distribution
                     mainPanel(
                       
                       #Created tabs for each plot in addition to informational tabs for people that have no idea what the app is.
                       #Also made a tab that makes general conclusions about each plot.
-                      tabsetPanel(type = "tabs",
+                      tabsetPanel(id = "tabs",
                                   tabPanel("About", htmlOutput("about")),
                                   tabPanel("Map", plotOutput("myMap")),
                                   tabPanel("Bar Graph", plotlyOutput("myPlot")),
@@ -121,17 +126,20 @@ server <- function(input, output) {
     
   #See markdown file for additional comments on this code.
     
-    myPlot2 <- leading_deaths %>%
+    scatter_plot <- leading_deaths %>%
       filter(State == "United States") %>%
       filter(Cause.Name == input$Cause.Name) %>%
   
       
-  #Added a title to the scatter plot. Added the option to choose between total deaths and age-adjusted death rates for the scatter plot
-      ggplot(aes_string(x = "Year" , y = input$z)) + geom_point() + geom_smooth() + ggtitle("Trends of Leading Causes of Death in the U.S. 1999-2016")
+  #Added a title to the scatter plot.
+  #Added the option to choose between total deaths and age-adjusted death rates for the scatter plot.
+  #Added a y lab title that made since for when a user switches between total deaths and age-adjusted death rate.
+      ggplot(aes_string(x = "Year" , y = input$z)) + geom_point() + geom_smooth() + 
+      ggtitle("Trends of Leading Causes of Death in the U.S. 1999-2016") + labs( y = "Death Statistic", x = "Year")
     
     
     require(scales)
-    myPlot2 + scale_y_continuous(labels = comma)
+    scatter_plot + scale_y_continuous(labels = comma)
     
     
     
@@ -147,7 +155,7 @@ server <- function(input, output) {
     
     myMap <- 
       
-      #Now c
+      #Applyin filters with input functions to allow for drop down menus. 
      us_states_leading_deaths_2 <-  us_states_leading_deaths_2 %>%
       filter(Year == input$x) %>%
       filter(Cause.Name == input$Cause.Name)
@@ -160,7 +168,7 @@ server <- function(input, output) {
       scale_fill_gradient(low = "white", high = "#009E73") +
       
     #Added a legend title that worked for both Total Deaths and Age-Adjusted Death Rate
-      guides(fill=guide_legend(title="Death Statistic"))
+      guides(fill=guide_legend(title= input$z))
   
   
     
