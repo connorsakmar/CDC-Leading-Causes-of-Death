@@ -58,12 +58,12 @@ leading_deaths <- read.csv("NCHS_-_Leading_Causes_of_Death__United_States.csv")
       xlab("Year") + ylab("Number of Deaths") + 
       ggtitle("Leading Causes of Death in the United States 1999-2016") +
       
-      #Getting rid of the bottom tick marks and cause names as they made the bottom 
-      #of the graph cluttered and were also redundant. 
+      #Getting rid of the bottom tick marks and cause names as they make the bottom 
+      #of the graph cluttered and are also redundant. 
       theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
     
     #The deaths total is easier to read in thousands than in scientific notation
-    #so this code converts the deaths into thousands below. 
+    #so this code converts the deaths into thousands with comma separations. 
     require(scales)
     myPlot1 + scale_y_continuous(labels = comma)
     
@@ -71,7 +71,7 @@ leading_deaths <- read.csv("NCHS_-_Leading_Causes_of_Death__United_States.csv")
     
 #This is the code for the Scatter Plot. Unlike the Bar Graph, we want the user to be able to 
 #see the trends of each individual cause throughout the given year period 1999-2016. In
-#the shiny app, this is made possible by a pull down menu to input each different cause of death. 
+#the shiny app, this is made possible by a pull-down menu to input each different cause of death. 
 
     
        myPlot2 <- leading_deaths %>%
@@ -90,7 +90,7 @@ leading_deaths <- read.csv("NCHS_-_Leading_Causes_of_Death__United_States.csv")
       ggplot(aes(x = Year, y = Deaths)) + geom_point() + geom_smooth() 
        
 #The deaths total is easier to read in thousands than in scientific notation
-#so this code converts the deaths into thousands below. 
+#so this code converts the deaths into thousands with comma separations. 
     
     require(scales)
     myPlot2 + scale_y_continuous(labels = comma)
@@ -126,7 +126,7 @@ leading_deaths <- leading_deaths %>%
     summarize(do_union = FALSE) %>%
     st_cast("POLYGON") %>%
     
-#Converting the polygons to multipolygons for states with discontinuous regions
+#Converting the polygons to multipolygons for states with discontinuous regions.
     group_by(id) %>% 
     summarize())
    
@@ -134,14 +134,14 @@ leading_deaths <- leading_deaths %>%
 st_crs(sf_fifty) <- 4326
 
 #Setting the states in leading death to lowercase so that the data can be joined with 
-#sf_fifty properly
+#sf_fifty properly.
 leading_deaths$id <- tolower(leading_deaths$State)
 us_states_leading_deaths <- left_join(sf_fifty, leading_deaths)
 
 
 #Creating a RDS file to put into shiny so that the code does not have to re-run in shiny
 #every time the app is run. 
-write_rds(us_states_leading_deaths, "us_states_leading_deaths.rds", compress = "none")
+write_rds(us_states_leading_deaths, "Leading_Causes_of_Death_App/us_states_leading_deaths.rds", compress = "none")
 
 #This is the basic ggplot structure for the map. In the shiny app it will be possible to choose between
 #the number of deaths and the age-adjusted death rate. 
