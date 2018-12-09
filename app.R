@@ -27,14 +27,16 @@ library(sf)
 
 leading_deaths <- read.csv("https://data.cdc.gov/api/views/bi63-dtpu/rows.csv?accessType=DOWNLOAD")
 
+
+
 #Importing the RDS file made in the markdown file.
 us_states_leading_deaths_2 <- read_rds("us_states_leading_deaths.rds")
 
  
-  ui <- fluidPage(fluidPage(theme = shinytheme("cerulean")),
+  ui <- fluidPage(fluidPage(theme = shinytheme("superhero")),
                   
                   # Application title
-                  titlePanel("Leading Causes of Death in the United States"),
+                  titlePanel("Leading Causes of Death in the United States 1999-2016"),
                   
                   
                   # Sidebar with a slider input for number of bins 
@@ -42,7 +44,7 @@ us_states_leading_deaths_2 <- read_rds("us_states_leading_deaths.rds")
                     sidebarPanel(
                       
                       #This ensures that the Death Statistic pull-down menu appears when either the map or the scatterplot is selected.
-                      conditionalPanel(condition = "input.tabs != 'Bar Graph'",
+                      conditionalPanel(condition = "input.tabs == 'Map'|| input.tabs =='Scatter Plot'",
                                        
                       #Allows the user to choose between total deaths and age-adjusted death rate. 
                       selectInput(inputId = "z",
@@ -51,7 +53,7 @@ us_states_leading_deaths_2 <- read_rds("us_states_leading_deaths.rds")
                                   selected = "Total Deaths")),
                       
                       #This ensures that the Year pull-down menu appears when either the map or the bar graph is selected. 
-                      conditionalPanel(condition = "input.tabs != 'Scatter Plot'",
+                      conditionalPanel(condition = "input.tabs == 'Map'||input.tabs == 'Bar Graph'",
                       
                       #Allows every year in the dataset to be part of a pull-down tab. 
                       selectInput(inputId = "x",
@@ -62,7 +64,7 @@ us_states_leading_deaths_2 <- read_rds("us_states_leading_deaths.rds")
                       
                       
                       #This ensures that the cause of death pull-down menu appears when either the map or the scatterplot is selected.
-                      conditionalPanel(condition = "input.tabs != 'Bar Graph'",
+                      conditionalPanel(condition = "input.tabs == 'Map'|| input.tabs == 'Scatter Plot'",
                       
                       #This code allows every cause of death in the dataset to be part of a pull-down menu *except* for all.causes. 
                       #As stated in the markdown file, the 2016 data for all causes is incomplete and there is such a high
@@ -80,13 +82,44 @@ us_states_leading_deaths_2 <- read_rds("us_states_leading_deaths.rds")
                     # Show a plot of the generated distribution
                     mainPanel(
                       
-                      #Created tabs for each plot in addition to informational tabs for people that have no idea what the app is.
-                      #Also made a tab that makes general conclusions about each plot.
+                      #Created tabs for each plot in addition to informational tabs for people who are unfamiliar with the subject matter.
+                      #Also made a tab that makes conclusions based on the the data as a whole. 
                       tabsetPanel(id = "tabs",
                                   tabPanel("About", htmlOutput("about")),
-                                  tabPanel("Map", plotOutput("myMap")),
-                                  tabPanel("Bar Graph", plotlyOutput("myPlot")),
-                                  tabPanel("Scatter Plot", plotlyOutput("myPlot2")),
+                                  tabPanel("Map", plotOutput("myMap"),
+                                          
+                                            
+                                  #Adding notable conclusions for the map underneath the graphic. 
+                                           br(),
+                                           br(),
+                                           br(),
+                                           p("There is obviously a high correlation with population size and the amount of deaths in a state, which explains why California and
+                  Texas are always the most darkly shaded. However, the map is really interesting because it shows differences between eastern states and
+                                            those in the Midwest; states that have relatively similar populations. It appears the many states in the midwest tend to be on the lower
+                                            end of the death spectrum for most causes than some of the smaller eastern states.")),
+                                  
+                                  tabPanel("Bar Graph", plotlyOutput("myPlot"),
+                                           
+                                  #Adding notable conclusions for the bar graph underneath the graphic. 
+                                  
+                                           br(),
+                                           br(),
+                                           br(),
+                                           p("The most distinctive aspect of the box plot is that heart disease and cancer are by far the two highest causes of death in the United States
+                  in comparison to the other eight top causes of death.CLRD, stroke, and unintentional injuries have also consistenly been in the top five causes of death,
+                                              yet each of these accounts for less than a third of the deaths caused by heart disease (the leading cause of death) each year.")),
+                                  
+                                  tabPanel("Scatter Plot", plotlyOutput("myPlot2"),
+                                           
+                                  #Adding notable conclusions for the scatter plot underneath the graphic. 
+                                  
+                                           br(),
+                                           br(),
+                                           br(),
+                                           p("The scatter plot shows some striking trends in the leading causes of death. Seven of the ten causes have generally trended upward since 1999. 
+                                             The three causes that don't show this trend are stroke, heart disease, and influenza and pneumonia. These all trended downards until around 2010,
+                                             when they began to slowly trend upwards again. While it is hard to say as to why this trend happens with all 3 without more data, one might speculate 
+                                             that there may have been a decline in deaths in the eldery population prior to 2010, as they are especially susceptible to these three causes.")),
                                   tabPanel("General Conclusions", htmlOutput("conclusions")))
                       
                       
@@ -111,6 +144,7 @@ server <- function(input, output) {
       xlab("Year") + ylab("Number of Deaths") + 
       ggtitle("Comparison of Leading Causes of Death in the U.S. 1999-2016") +
       theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+    
       
     #  Changed the legend title to "Cause of Death" rather than Cause.Name
       guides(fill=guide_legend(title="Cause of Death"))
@@ -134,7 +168,7 @@ server <- function(input, output) {
   #Added a title to the scatter plot.
   #Added the option to choose between total deaths and age-adjusted death rates for the scatter plot.
   #Added a y lab title that made since for when a user switches between total deaths and age-adjusted death rate.
-      ggplot(aes_string(x = "Year" , y = input$z)) + geom_point() + geom_smooth() + 
+     ggplot(aes_string(x = "Year" , y = input$z)) + geom_point() + geom_smooth() + 
       ggtitle("Trends of Leading Causes of Death in the U.S. 1999-2016") + labs( y = "Death Statistic", x = "Year")
     
     
@@ -156,19 +190,22 @@ server <- function(input, output) {
     myMap <- 
       
       #Applyin filters with input functions to allow for drop down menus. 
-     us_states_leading_deaths_2 <-  us_states_leading_deaths_2 %>%
+    us_states_leading_deaths_2 <-  us_states_leading_deaths_2 %>%
       filter(Year == input$x) %>%
       filter(Cause.Name == input$Cause.Name)
     
-  ggplot(data = us_states_leading_deaths_2) +
+    us_states_leading_deaths_3 <- st_as_sf(us_states_leading_deaths_2, coords = c("long", "lat"))
+    
+  ggplot(data = us_states_leading_deaths_3) +
      #Allows the user to choose between "death statistics," either Total Deaths or Age-Adjusted Death Rate
       geom_sf(aes_string(fill = input$z)) + 
         
      #Added a better gradient so that the differences between states are more obvious. 
       scale_fill_gradient(low = "white", high = "#009E73") +
-      
-    #Added a legend title that worked for both Total Deaths and Age-Adjusted Death Rate
-      guides(fill=guide_legend(title= input$z))
+    
+    
+    #  Changed the legend title to "Death Statistic" so that it makes sense for both Total Deaths and Age-Adjusted Death Rate.
+    guides(fill=guide_legend(title="Cause of Death"))
   
   
     
@@ -186,28 +223,32 @@ server <- function(input, output) {
                   Heart Disease, Influenza and Pneumonia, Kidney Disease, Stroke, Suicide, and Unintentional Injuries.")
     str3 <- paste("What to Explore") 
     str4 <- paste("There are three plots that you can look at: a map, a bar graph, and a scatter plot. The map, as one might guess, maps
-                  the causes of death across the United States. A user can select both the year and cause of death that they want to see
-                  mapped across all 50 states. The bar graph allows the user to compare all of the leading of causes of death
+                  the causes of death across the United States. A user can see the age-adjusted death rate and total deaths in each state for any given
+                  given year or cause of death. The bar graph allows the user to compare all of the leading of causes of death
                   in the United States for a given year. The user can select which year they would like to compare the total deaths in the United
-                  States for each cause of death. Finally, the scatter plot allows the user to see the trend in deaths for any cause of death
-                  that they select from 1999-2016.")
-    str5 <- paste("Source")
-    str6 <- paste("This dataset came from the Center for Disease Control which compiled data from the National Center for Health Statistics.
+                  States for each cause of death. Finally, the scatter plot allows the user to see the trend in total deaths and age-adjusted death rate
+                  for any cause of death that they select from 1999-2016.")
+    str5 <- paste("Clarification of Terms")
+    str6 <- paste("CLRD stands for Chronic Lower Respiratory Disease and is a broad term that consists of several lung diseases such as COPD, emphysema, and chronic bronchitis.
+                  Unintentional Injuries refers to unplanned injuries such as falls, vehicle accidents, drownings, and other deaths of that nature.
+                  ")
+    str7 <- paste("Source")
+    str8 <- paste("This dataset came from the Center for Disease Control which compiled data from the National Center for Health Statistics.
                   Cause of death statistics are based on the underlying cause of death.")
     
-    HTML(paste(h1(str1), p(str2), h1(str3), p(str4), h1(str5), p(str6)))})
+    HTML(paste(h1(str1), p(str2), h1(str3), p(str4), h1(str5), p(str6), h1(str7), p(str8)))})
   
   output$conclusions <- renderUI({
     
     #General conclusions made from looking at the three plots. 
     
     
-    str1 <- paste("Map")
+    str1 <- paste("Conclusion")
     str2 <- paste("There is obviously a high correlation with population size and the amount of deaths in a state, which explains why California and
                   Texas are always the most darkly shaded. However, the map is really interesting because it shows differences between eastern states and
                   those in the Midwest; states that have relatively similar populations. It appears the many states in the midwest tend to be on the lower
                   end of the death spectrum for most causes than some of the smaller eastern states.")
-    str3 <- paste("Bar Graph") 
+    str3 <- paste("More Information") 
     str4 <- paste("The most distinctive aspect of the box plot is that heart disease and cancer are by far the two highest causes of death in the United States
                   in comparison to the other eight top causes of death.CLRD, stroke, and unintentional injuries have also consistenly been in the top five causes of death,
                   yet each of these accounts for less than a third of the deaths caused by heart disease (the leading cause of death) each year.")
