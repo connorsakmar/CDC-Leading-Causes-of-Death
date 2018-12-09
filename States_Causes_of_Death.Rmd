@@ -51,7 +51,7 @@ leading_deaths <- read.csv("NCHS_-_Leading_Causes_of_Death__United_States.csv")
       
       #We want to compare just the ten causes and just the United States totals.
       #The US totals are more impactful, and All Causes data does not just ruin
-      #scaling on the bar graph but the All Causes data is incomplete for the year 2016
+      #scaling on the bar graph but the All Causes data is incomplete for the year 2016.
       
       filter(State == "United States", Cause.Name != "All causes") %>%
       ggplot(aes(x = Cause.Name, y = Deaths, fill = Cause.Name)) + geom_bar(stat = "identity") +
@@ -137,6 +137,7 @@ st_crs(sf_fifty) <- 4326
 #sf_fifty properly
 leading_deaths$id <- tolower(leading_deaths$State)
 us_states_leading_deaths <- left_join(sf_fifty, leading_deaths)
+
 
 #Creating a RDS file to put into shiny so that the code does not have to re-run in shiny
 #every time the app is run. 
