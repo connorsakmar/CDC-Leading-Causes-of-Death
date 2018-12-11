@@ -89,37 +89,44 @@ us_states_leading_deaths_2 <- read_rds("us_states_leading_deaths.rds")
                                   tabPanel("Map", plotOutput("myMap"),
                                           
                                             
-                                  #Adding notable conclusions for the map underneath the graphic. 
+                                  #Adding notable observations for the map underneath the graphic. 
                                            br(),
                                            br(),
                                            br(),
                                            p("There is obviously a high correlation with population size and the amount of deaths in a state, which explains why California and
-                  Texas are always the most darkly shaded. However, the map is really interesting because it shows differences between eastern states and
-                                            those in the Midwest; states that have relatively similar populations. It appears the many states in the midwest tend to be on the lower
-                                            end of the death spectrum for most causes than some of the smaller eastern states.")),
+                                              Texas are always the most darkly shaded when total deaths is selected. For this reason, it is hard to tell if there are any correlations between causes of death 
+                                              and certain geographic ares. However, when age-adjusted death rate is selected, certain states and areas become distinctive. For example, New York,
+                                              in 2016, had the lowest age-adjusted death rate in the country for Alzheimer's Disease, while Utah has consistently had the lowest age-adjusted death
+                                              rate in the country for cancer. Perhaps trends like these indicate a healthier lifestyle for people within those states, an if so, could lead to further 
+                                              research into how those lifestyles lower death rates.
+                                             ")),
                                   
                                   tabPanel("Bar Graph", plotlyOutput("myPlot"),
                                            
-                                  #Adding notable conclusions for the bar graph underneath the graphic. 
+                                  #Adding notable observations for the bar graph underneath the graphic. 
                                   
                                            br(),
                                            br(),
                                            br(),
-                                           p("The most distinctive aspect of the box plot is that heart disease and cancer are by far the two highest causes of death in the United States
-                  in comparison to the other eight top causes of death.CLRD, stroke, and unintentional injuries have also consistenly been in the top five causes of death,
-                                              yet each of these accounts for less than a third of the deaths caused by heart disease (the leading cause of death) each year.")),
+                                           p("The most distinctive aspect of the bar graph is that heart disease and cancer are by far the two highest causes of death in the United States
+                                             in comparison to the other eight top causes of death.CLRD, stroke, and unintentional injuries have also consistenly been in the top five causes of death,
+                                             yet each of these accounts for less than a third of the deaths caused by heart disease (the leading cause of death) each year.")),
                                   
                                   tabPanel("Scatter Plot", plotlyOutput("myPlot2"),
                                            
-                                  #Adding notable conclusions for the scatter plot underneath the graphic. 
+                                  #Adding notable observations for the scatter plot underneath the graphic. 
                                   
                                            br(),
                                            br(),
                                            br(),
-                                           p("The scatter plot shows some striking trends in the leading causes of death. Seven of the ten causes have generally trended upward since 1999. 
-                                             The three causes that don't show this trend are stroke, heart disease, and influenza and pneumonia. These all trended downards until around 2010,
-                                             when they began to slowly trend upwards again. While it is hard to say as to why this trend happens with all 3 without more data, one might speculate 
-                                             that there may have been a decline in deaths in the eldery population prior to 2010, as they are especially susceptible to these three causes.")),
+                                           p("The scatter plot shows some striking trends in the leading causes of death. Seven of the ten causes have generally trended upward since 1999 in terms of toatal deaths.
+                                              The three causes that don't show this trend are stroke, heart disease, and influenza and pneumonia. These all trended downards until around 2010,
+                                             when they began to slowly trend upwards again. However, only three causes are trending upwards in terms of age-adjusted death rate. This means that deaths are increasing because population size is increasing,
+                                              yet the actual number of deaths per year in proportion to the population increase is actually decreasing for most causes of death. Suicide and unintentional injuries
+                                              are two of the causes that are trending upwards, which makes sense as they are not causes of death that are readily curable or treatable like most of the other diseases.
+                                              Alzheimer's disease is the only disease that has an age-adjusted death rate that has increased over the last several years, which indicates that American medicine
+                                             has not yet figured out a viable treatment for the disease, or at least not one that has made a noticeable impact on the age-adjusted death rate." 
+                                            )),
                                   tabPanel("General Conclusions", htmlOutput("conclusions")))
                       
                       
@@ -189,14 +196,14 @@ server <- function(input, output) {
     
     myMap <- 
       
-      #Applyin filters with input functions to allow for drop down menus. 
+      #Applying filters with input functions to allow for drop down menus for year and cause of death. 
     us_states_leading_deaths_2 <-  us_states_leading_deaths_2 %>%
       filter(Year == input$x) %>%
       filter(Cause.Name == input$Cause.Name)
     
-    us_states_leading_deaths_3 <- st_as_sf(us_states_leading_deaths_2, coords = c("long", "lat"))
     
-  ggplot(data = us_states_leading_deaths_3) +
+    
+  ggplot(data = us_states_leading_deaths_2) +
      #Allows the user to choose between "death statistics," either Total Deaths or Age-Adjusted Death Rate
       geom_sf(aes_string(fill = input$z)) + 
         
@@ -205,7 +212,9 @@ server <- function(input, output) {
     
     
     #  Changed the legend title to "Death Statistic" so that it makes sense for both Total Deaths and Age-Adjusted Death Rate.
-    guides(fill=guide_legend(title="Cause of Death"))
+    guides(fill=guide_legend(title="Death Statistic"))
+ 
+
   
   
     
@@ -213,9 +222,16 @@ server <- function(input, output) {
   
   output$about <- renderUI({
     
+    # The about tab is straightforward and is meant to:
     # Provide users with a summary of the application and what it is meant to 
-    # Provide useres with a some details about each plot. 
+    # Provide users with a some details about each plot.
+    # Clarify some terms that several people asked about when this data was initially presented. 
     # Provide users with information on the data source
+    
+    
+    #Makes it possible to create a URL hyperlink to useful information - in this case a link 
+    #that explains age-adjusted death rates. 
+    url <- a("CDC Statistical Notes", href="https://www.cdc.gov/cancer/uscs/technical_notes/stat_methods/rates.htm")
     
     str1 <- paste("About")
     str2 <- paste("This shiny shows the leading causes of death in the United States from 1999-2016. The data includes the top 10 causes 
@@ -228,41 +244,50 @@ server <- function(input, output) {
                   in the United States for a given year. The user can select which year they would like to compare the total deaths in the United
                   States for each cause of death. Finally, the scatter plot allows the user to see the trend in total deaths and age-adjusted death rate
                   for any cause of death that they select from 1999-2016.")
+    
+    #Needed this clarification of terms heading because numerous people asked about CLRD and unintentional injuries during the intial presentation of this app. 
+    #It therefore seems important to add this info to the app since I will not always be there to explain it. Also, age-adjusted death rates are an 
+    #important statistic for this app so they needed to be explained fully. 
     str5 <- paste("Clarification of Terms")
     str6 <- paste("CLRD stands for Chronic Lower Respiratory Disease and is a broad term that consists of several lung diseases such as COPD, emphysema, and chronic bronchitis.
-                  Unintentional Injuries refers to unplanned injuries such as falls, vehicle accidents, drownings, and other deaths of that nature.
-                  ")
+                  Unintentional Injuries refers to unplanned injuries such as falls, vehicle accidents, drownings, and other deaths of that nature. Age-adjusted death rates are important
+                  because as the CDC states, they ensure 'that differences in incidence or deaths from one year to another, or between one geographic area and another, are not due to 
+                  differences in the age distribution of the populations being compared.' The death rates in this data are calculated as deaths per 100,000 total population. This is especially important when mapping data, because the age distribution of a population can change
+                  over time or be different in different geographic locations. For more information on age-adjustment for causes of death click here:")
+    strL <- tagList(url)
     str7 <- paste("Source")
     str8 <- paste("This dataset came from the Center for Disease Control which compiled data from the National Center for Health Statistics.
                   Cause of death statistics are based on the underlying cause of death.")
     
-    HTML(paste(h1(str1), p(str2), h1(str3), p(str4), h1(str5), p(str6), h1(str7), p(str8)))})
+    HTML(paste(h1(str1), p(str2), h1(str3), p(str4), h1(str5), p(str6), p(strL), h1(str7), p(str8)))})
   
   output$conclusions <- renderUI({
     
-    #General conclusions made from looking at the three plots. 
+   #Creating a link to my github
+    url2 <- a("Connor Sakmar Github", href="https://github.com/connorsakmar/CDC-Leading-Causes-of-Death")
+   
+    
+    #General conclusions made from looking at the the three plots. These conclusions are a bit more general
+    #so it makes sense to keep them distinct from the conclusions below each graphic. 
+    str1 <- paste("Deceiving Statistics")
+    str2 <- paste("As seen with both the map and the scatter plot, it is important to not make assumptions about certain causes of death just based off of total death
+                  count alone. While yes, it is worrisome that many of the leading causes continue to rise in total deaths, the actual death rate from year to year is decreasing
+                  for most of them. This is a useful thing to keep in mind the next time death statistics are used on tv or in the media.")
+    str3 <- paste("Are Certain Areas Healthier?") 
+    str4 <- paste("As noted on the map page, some states show much lower age-adjusted death rates than others. While it is impossible to say definitively why this may be 
+                  the case, a lot of cultural and environmental factors need to be taken into account. For instance, perhaps the large Mormon population in Utah accounts for
+                  healthier overall lifestyles and therefore the age-adjusted death rate due to cancer is lower than other states. The purpose of this app is to point out these
+                  interesting trends and to encourage further research in the area.")
+    str5 <- paste("Conclusion")
+    str6 <- paste("While the leading causes of death continue to rise and trend upward, it seems that many of the death rates are lowering as medical technology advances.  We can hope 
+                  that this trend will continue and that deaths from all of these causes will be in decline. Hopefully you enjoyed looking at this data and that it has encouraged you to look more closely and
+                  investigate some of the trends or patterns that you found!If interested in further research on this topic, look at the data and links provided in 
+                  my github:")
+    str7 <- tagList(url2)
     
     
-    str1 <- paste("Conclusion")
-    str2 <- paste("There is obviously a high correlation with population size and the amount of deaths in a state, which explains why California and
-                  Texas are always the most darkly shaded. However, the map is really interesting because it shows differences between eastern states and
-                  those in the Midwest; states that have relatively similar populations. It appears the many states in the midwest tend to be on the lower
-                  end of the death spectrum for most causes than some of the smaller eastern states.")
-    str3 <- paste("More Information") 
-    str4 <- paste("The most distinctive aspect of the box plot is that heart disease and cancer are by far the two highest causes of death in the United States
-                  in comparison to the other eight top causes of death.CLRD, stroke, and unintentional injuries have also consistenly been in the top five causes of death,
-                  yet each of these accounts for less than a third of the deaths caused by heart disease (the leading cause of death) each year.")
-    str5 <- paste("Scatter Plot")
-    str6 <- paste("The scatter plot shows some striking trends in the leading causes of death. Seven of the ten causes have generally trended upward since 1999. 
-                  The three causes that don't show this trend are stroke, heart disease, and influenza and pneumonia. These all trended downards until around 2010,
-                  when they began to slowly trend upwards again. While it is hard to say as to why this trend happens with all 3 without more data, one might speculate 
-                  that there may have been a decline in deaths in the eldery population prior to 2010, as they are especially susceptible to these three causes.")
-    str7 <- paste("Conclusion")
-    str8 <- paste("The leading causes of death continue to rise and trend upward. We can hope that modern science can advance far enough that deaths from these
-                  causes will decline in the near future. Hopefully you enjoyed looking at this data and that it has encouraged you to look more closely and
-                  investigate some of the trends or patterns that you found!")
     
-    HTML(paste(h1(str1), p(str2), h1(str3), p(str4), h1(str5), p(str6), h1(str7), p(str8)))})}
+    HTML(paste(h1(str1), p(str2), h1(str3), p(str4), h1(str5), p(str6), h3(str7)))})}
   
   
 

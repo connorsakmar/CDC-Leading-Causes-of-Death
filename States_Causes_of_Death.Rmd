@@ -120,12 +120,12 @@ leading_deaths <- leading_deaths %>%
 #The library allows be to call the data with fifty_states, though it has to be converted it 
 #to a sf data frame and saving it as sf_fifty.
 (sf_fifty <- st_as_sf(fifty_states, coords = c("long", "lat")) %>% 
-    
+   
 #Converting the sets of points within the data into polygons
     group_by(id, piece) %>% 
     summarize(do_union = FALSE) %>%
     st_cast("POLYGON") %>%
-    
+     
 #Converting the polygons to multipolygons for states with discontinuous regions.
     group_by(id) %>% 
     summarize())
