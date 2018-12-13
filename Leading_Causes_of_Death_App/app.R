@@ -35,11 +35,11 @@ us_states_leading_deaths_2 <- read_rds("us_states_leading_deaths.rds")
  
   ui <- fluidPage(fluidPage(theme = shinytheme("superhero")),
                   
-                  # Application title
+                  # Title of the Shiny App
                   titlePanel("Leading Causes of Death in the United States 1999-2016"),
                   
                   
-                  # Sidebar with a slider input for number of bins 
+                  # Sidebar that contains the input functions for Year, Death Statistic, and Cause of Death.
                   sidebarLayout(
                     sidebarPanel(
                       
@@ -79,7 +79,7 @@ us_states_leading_deaths_2 <- read_rds("us_states_leading_deaths.rds")
                       
                       
                  
-                    # Show a plot of the generated distribution
+                    # The following code makes the distinct tabs of the shiny app and also contains my conclusions for each visual. 
                     mainPanel(
                       
                       #Created tabs for each plot in addition to informational tabs for people who are unfamiliar with the subject matter.
@@ -89,7 +89,7 @@ us_states_leading_deaths_2 <- read_rds("us_states_leading_deaths.rds")
                                   tabPanel("Map", plotOutput("myMap"),
                                           
                                             
-                                  #Adding notable observations for the map underneath the graphic. 
+                                  #Adding notable observations for the map underneath the visual. 
                                            br(),
                                            br(),
                                            br(),
@@ -135,7 +135,7 @@ us_states_leading_deaths_2 <- read_rds("us_states_leading_deaths.rds")
   )
                   
 
-# Define server logic required to draw a histogram
+# Defines server logic required to draw the bar graph, scatter plot, and map. 
 server <- function(input, output) {
   
   
@@ -286,7 +286,7 @@ server <- function(input, output) {
     str7 <- tagList(url2)
     
     
-    
+    #Creating headers with certain strings and then pasting the text below it. 
     HTML(paste(h1(str1), p(str2), h1(str3), p(str4), h1(str5), p(str6), h3(str7)))})}
   
   
