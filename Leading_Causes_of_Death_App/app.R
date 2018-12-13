@@ -97,7 +97,7 @@ us_states_leading_deaths_2 <- read_rds("us_states_leading_deaths.rds")
                                               Texas are always the most darkly shaded when total deaths is selected. For this reason, it is hard to tell if there are any correlations between causes of death 
                                               and certain geographic ares. However, when age-adjusted death rate is selected, certain states and areas become distinctive. For example, New York,
                                               in 2016, had the lowest age-adjusted death rate in the country for Alzheimer's Disease, while Utah has consistently had the lowest age-adjusted death
-                                              rate in the country for cancer. Perhaps trends like these indicate a healthier lifestyle for people within those states, an if so, could lead to further 
+                                              rate in the country for cancer. Perhaps trends like these indicate a healthier lifestyle for people within those states, and if so, could lead to further 
                                               research into how those lifestyles lower death rates.
                                              ")),
                                   
