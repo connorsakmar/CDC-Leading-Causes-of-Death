@@ -93,6 +93,13 @@ us_states_leading_deaths_2 <- read_rds("us_states_leading_deaths.rds")
                                            br(),
                                            br(),
                                            br(),
+                                  
+                                  #Added a header instead of a ggtitle because the ggtitle would format the map so that it was smaller.
+                                  #Since the idea is to be able to see all 50 states clearly, the states should be as big as can be. Also,
+                                  #the map of the United States is fairly recognizable, so the hope is that the map is fairly self-explanatory, 
+                                  #but a header was added just in case. 
+                                  
+                                           h3("Leading Causes of Death Mapped Across the 50 US States"),
                                            p("There is obviously a high correlation with population size and the amount of deaths in a state, which explains why California and
                                               Texas are always the most darkly shaded when total deaths is selected. For this reason, it is hard to tell if there are any correlations between causes of death 
                                               and certain geographic ares. However, when age-adjusted death rate is selected, certain states and areas become distinctive. For example, New York,
@@ -109,7 +116,7 @@ us_states_leading_deaths_2 <- read_rds("us_states_leading_deaths.rds")
                                            br(),
                                            br(),
                                            p("The most distinctive aspect of the bar graph is that heart disease and cancer are by far the two highest causes of death in the United States
-                                             in comparison to the other eight top causes of death.CLRD, stroke, and unintentional injuries have also consistenly been in the top five causes of death,
+                                             in comparison to the other eight top causes of death. CLRD, stroke, and unintentional injuries have also consistenly been in the top five causes of death,
                                              yet each of these accounts for less than a third of the deaths caused by heart disease (the leading cause of death) each year.")),
                                   
                                   tabPanel("Scatter Plot", plotlyOutput("myPlot2"),
@@ -125,8 +132,7 @@ us_states_leading_deaths_2 <- read_rds("us_states_leading_deaths.rds")
                                               yet the actual number of deaths per year in proportion to the population increase is actually decreasing for most causes of death. Suicide and unintentional injuries
                                               are two of the causes that are trending upwards, which makes sense as they are not causes of death that are readily curable or treatable like most of the other diseases.
                                               Alzheimer's disease is the only disease that has an age-adjusted death rate that has increased over the last several years, which indicates that American medicine
-                                             has not yet figured out a viable treatment for the disease, or at least not one that has made a noticeable impact on the age-adjusted death rate." 
-                                            )),
+                                             has not yet figured out a viable treatment for the disease, or at least not one that has made a noticeable impact on the age-adjusted death rate.")),
                                   tabPanel("General Conclusions", htmlOutput("conclusions")))
                       
                       
@@ -267,7 +273,7 @@ server <- function(input, output) {
     url2 <- a("Connor Sakmar Github", href="https://github.com/connorsakmar/CDC-Leading-Causes-of-Death")
    
     
-    #General conclusions made from looking at the the three plots. These conclusions are a bit more general
+    #General conclusions made from looking at the the three graphics. These conclusions are a bit more general
     #so it makes sense to keep them distinct from the conclusions below each graphic. 
     str1 <- paste("Deceiving Statistics")
     str2 <- paste("As seen with both the map and the scatter plot, it is important to not make assumptions about certain causes of death just based off of total death
