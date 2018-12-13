@@ -234,12 +234,12 @@ server <- function(input, output) {
     url <- a("CDC Statistical Notes", href="https://www.cdc.gov/cancer/uscs/technical_notes/stat_methods/rates.htm")
     
     str1 <- paste("About")
-    str2 <- paste("This shiny shows the leading causes of death in the United States from 1999-2016. The data includes the top 10 causes 
-                  of death over that time, which are: Alzheimer's Disease, Cancer, CLRD (Chronic Lower Respiratory Disease), Diabetes,
+    str2 <- paste("This shiny focuses on characteristics of the leading causes of death in the United States for 1999 -2016. This data is comprised of the
+                  top ten causes of death during that time period, which includes Alzheimer's Disease, Cancer, CLRD (Chronic Lower Respiratory Disease), Diabetes,
                   Heart Disease, Influenza and Pneumonia, Kidney Disease, Stroke, Suicide, and Unintentional Injuries.")
     str3 <- paste("What to Explore") 
-    str4 <- paste("There are three plots that you can look at: a map, a bar graph, and a scatter plot. The map, as one might guess, maps
-                  the causes of death across the United States. A user can see the age-adjusted death rate and total deaths in each state for any given
+    str4 <- paste("Several graphical representations were employed to highlight various aspects of the data: maps, bar graphs, and scatter plots. The map, as one might guess, maps
+                  the causes of death across the United States. A user can see the age-adjusted death rate and total deaths in each state for any
                   given year or cause of death. The bar graph allows the user to compare all of the leading of causes of death
                   in the United States for a given year. The user can select which year they would like to compare the total deaths in the United
                   States for each cause of death. Finally, the scatter plot allows the user to see the trend in total deaths and age-adjusted death rate
