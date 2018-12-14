@@ -38,8 +38,6 @@ leading_deaths <- read.csv("NCHS_-_Leading_Causes_of_Death__United_States.csv")
   
 
 
-
-
 #This is the code for my Bar Graph, here we want the user to be able to compare all of the 
 #causes next to each other.When put into shiny, In the shiny app, it is possible to choose 
 #the year so that the causes can be compared for every year.
@@ -144,7 +142,7 @@ us_states_leading_deaths <- left_join(sf_fifty, leading_deaths)
 write_rds(us_states_leading_deaths, "Leading_Causes_of_Death_App/us_states_leading_deaths.rds", compress = "none")
 
 #This is the basic ggplot structure for the map. In the shiny app it will be possible to choose between
-#the number of deaths and the age-adjusted death rate. 
+#the number of deaths and the age-adjusted death rate for every cause of death and year. 
 ggplot(data = us_states_leading_deaths) +
   geom_sf(aes(fill = Deaths))
   

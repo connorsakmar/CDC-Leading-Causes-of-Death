@@ -32,7 +32,7 @@ leading_deaths <- read.csv("https://data.cdc.gov/api/views/bi63-dtpu/rows.csv?ac
 #Importing the RDS file made in the markdown file.
 us_states_leading_deaths_2 <- read_rds("us_states_leading_deaths.rds")
 
- 
+
   ui <- fluidPage(fluidPage(theme = shinytheme("superhero")),
                   
                   # Title of the Shiny App
@@ -99,7 +99,7 @@ us_states_leading_deaths_2 <- read_rds("us_states_leading_deaths.rds")
                                   #the map of the United States is fairly recognizable, so the hope is that the map is fairly self-explanatory, 
                                   #but a header was added just in case. 
                                   
-                                           h3("Leading Causes of Death Mapped Across the 50 US States"),
+                                           h4("Leading Causes of Death Mapped Across the 50 US States"),
                                            p("There is obviously a high correlation with population size and the amount of deaths in a state, which explains why California and
                                               Texas are always the most darkly shaded when total deaths is selected. For this reason, it is hard to tell if there are any correlations between causes of death 
                                               and certain geographic ares. However, when age-adjusted death rate is selected, certain states and areas become distinctive. For example, New York,
@@ -126,7 +126,7 @@ us_states_leading_deaths_2 <- read_rds("us_states_leading_deaths.rds")
                                            br(),
                                            br(),
                                            br(),
-                                           p("The scatter plot shows some striking trends in the leading causes of death. Seven of the ten causes have generally trended upward since 1999 in terms of toatal deaths.
+                                           p("The scatter plot shows some striking trends in the leading causes of death. Seven of the ten causes have generally trended upwards since 1999 in terms of toatal deaths.
                                               The three causes that don't show this trend are stroke, heart disease, and influenza and pneumonia. These all trended downards until around 2010,
                                              when they began to slowly trend upwards again. However, only three causes are trending upwards in terms of age-adjusted death rate. This means that deaths are increasing because population size is increasing,
                                               yet the actual number of deaths per year in proportion to the population increase is actually decreasing for most causes of death. Suicide and unintentional injuries
@@ -248,8 +248,8 @@ server <- function(input, output) {
                   the causes of death across the United States. A user can see the age-adjusted death rate and total deaths in each state for any
                   given year or cause of death. The bar graph allows the user to compare all of the leading of causes of death
                   in the United States for a given year. The user can select which year they would like to compare the total deaths in the United
-                  States for each cause of death. Finally, the scatter plot allows the user to see the trend in total deaths and age-adjusted death rate
-                  for any cause of death that they select from 1999-2016.")
+                  States for each cause of death. Finally, the scatter plot allows the user to see the trend in total deaths and age-adjusted death rates
+                  for any cause of death from 1999-2016.")
     
     #Needed this clarification of terms heading because numerous people asked about CLRD and unintentional injuries during the intial presentation of this app. 
     #It therefore seems important to add this info to the app since I will not always be there to explain it. Also, age-adjusted death rates are an 
@@ -276,7 +276,7 @@ server <- function(input, output) {
     #General conclusions made from looking at the the three graphics. These conclusions are a bit more general
     #so it makes sense to keep them distinct from the conclusions below each graphic. 
     str1 <- paste("Deceiving Statistics")
-    str2 <- paste("As seen with both the map and the scatter plot, it is important to not make assumptions about certain causes of death just based off of total death
+    str2 <- paste("As seen with both the map and the scatter plot, it is important to not make assumptions about certain causes of death based off of total death
                   count alone. While yes, it is worrisome that many of the leading causes continue to rise in total deaths, the actual death rate from year to year is decreasing
                   for most of them. This is a useful thing to keep in mind the next time death statistics are used on tv or in the media.")
     str3 <- paste("Are Certain Areas Healthier?") 
@@ -287,7 +287,7 @@ server <- function(input, output) {
     str5 <- paste("Conclusion")
     str6 <- paste("While the leading causes of death continue to rise and trend upward, it seems that many of the death rates are lowering as medical technology advances.  We can hope 
                   that this trend will continue and that deaths from all of these causes will be in decline. Hopefully you enjoyed looking at this data and that it has encouraged you to look more closely and
-                  investigate some of the trends or patterns that you found!If interested in further research on this topic, look at the data and links provided in 
+                  investigate some of the trends or patterns that you found! If interested in further research on this topic, look at the data and links provided in 
                   my github:")
     str7 <- tagList(url2)
     
