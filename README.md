@@ -15,7 +15,7 @@ By informing the common American about the leading causes of death in the United
 
 For those who want more statistics and general information on American health, these are useful resources:
 
-https://www.cdc.gov/nchs/data/nvsr/nvsr67/nvsr67_05.pdf - 2016 Deaths final data
+https://www.cdc.gov/nchs/data/nvsr/nvsr67/nvsr67_05.pdf - 2016 Deaths: final data
 
 https://www.cdc.gov/healthreport/publications/compendium.pdf - provides a progress report from 2005 to 2012 on the health of the United States, along with useful graphics
 
